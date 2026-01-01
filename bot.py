@@ -219,18 +219,26 @@ async def modes(ctx):
 
 
 import asyncio
+from aiohttp import web
 import os
 
 async def run_bot():
-    while True:
-        try:
-            await bot.start(os.getenv("BOT_TOKEN"))
-        except discord.errors.HTTPException as e:
-            if e.status == 429:
-                print("Rate limited — waiting 60 seconds...")
-                await asyncio.sleep(60)
-            else:
-                raise
+    await bot.start(os.getenv("BOT_TOKEN"))
 
-asyncio.run(run_bot())
+async def handle(request):
+    return web.Response(text="Bot is running")
+
+async def run_web():
+    app = web.Application()
+    app.add_routes([web.get("/", handle)])
+    port = int(os.getenv("PORT", 10000))
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+
+async def main():
+    await asyncio.gather(run_bot(), run_web())
+
+asyncio.run(main())
 
