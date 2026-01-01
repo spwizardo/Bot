@@ -217,5 +217,18 @@ async def modes(ctx):
     await ctx.send(embed=embed)
 
 
+import asyncio
 import os
-bot.run(os.getenv("BOT_TOKEN"))
+
+async def run_bot():
+    while True:
+        try:
+            await bot.start(os.getenv("BOT_TOKEN"))
+        except discord.errors.HTTPException as e:
+            if e.status == 429:
+                print("Rate limited — waiting 60 seconds...")
+                await asyncio.sleep(60)
+            else:
+                raise
+
+asyncio.run(run_bot())
