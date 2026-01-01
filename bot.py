@@ -241,4 +241,3 @@ async def main():
     await asyncio.gather(run_bot(), run_web())
 
 asyncio.run(main())
-
