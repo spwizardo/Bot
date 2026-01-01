@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import json
 import os
+from aiohttp import web
 
 intents = discord.Intents.default()
 intents.members = True
@@ -232,3 +233,4 @@ async def run_bot():
                 raise
 
 asyncio.run(run_bot())
+
